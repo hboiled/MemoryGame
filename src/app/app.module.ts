@@ -6,13 +6,17 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { MainGameComponent } from './main-game/main-game.component';
+import { MemoryBlocksComponent } from './main-game/memory-blocks/memory-blocks.component';
+import { BlockDisplayComponent } from './main-game/memory-blocks/block-display/block-display.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    MainGameComponent
+    MainGameComponent,
+    MemoryBlocksComponent,
+    BlockDisplayComponent
   ],
   imports: [
     BrowserModule,

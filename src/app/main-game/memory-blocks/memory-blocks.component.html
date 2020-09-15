@@ -1,0 +1,6 @@
+<div class="game-display">
+    <!-- <div class="memoryBlock" *ngFor="let t of [].constructor(test)"> -->
+    <div class="memoryBlock" *ngFor="let w of words; let i = index">
+        <app-block-display [selWord]="words[i]"></app-block-display>
+    </div>
+</div>
