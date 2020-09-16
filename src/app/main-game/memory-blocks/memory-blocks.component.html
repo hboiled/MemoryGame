@@ -5,8 +5,10 @@
     <div class="memoryBlock" *ngFor="let w of words; let i = index">   
         <app-block-display [setDisplayStatus]="displayStatus.asObservable()"
             [setCompletedStatus]="markCompleted.asObservable()"
-            [selWord]="words[i]" [indexNum]="i"
-            (selectedIndex)="setSelectedIndex($event)"
+            [indexMarkSetSelected]="indexSelection.asObservable()"
+            [selWord]="words[i]" [indexNum]="i"     
+            (click)="selectBlock(i)"       
             ></app-block-display>                               
+            <!-- (selectedIndex)="setSelectedIndex($event)" -->
     </div>
 </div>

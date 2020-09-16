@@ -24,22 +24,27 @@ export class MemoryBlocksComponent implements OnInit {
 
   displayStatus: Subject<boolean> = new Subject<boolean>();
   markCompleted: Subject<number[]> = new Subject<number[]>();
+  indexSelection: Subject<number> = new Subject<number>();
 
-  setSelectedIndex(num: number) {
-
-    // validation of input - first already selected cannot select first again
-    if (this.firstSelectedIndex >= 0 && num !== this.firstSelectedIndex) {
-      this.secondSelectedIndex = num;
-    } else {
-      this.firstSelectedIndex = num;
+  selectBlock(index: number): void {
+    // validation of selection
+    if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
+      return;
     }
 
-    // evaluate both selected indexes
+    // validation of input - first already selected cannot select first again
+    if (this.firstSelectedIndex >= 0 && index !== this.firstSelectedIndex) {
+      this.secondSelectedIndex = index;
+      this.indexSelection.next(this.secondSelectedIndex);
+    } else {
+      this.firstSelectedIndex = index;
+      this.indexSelection.next(this.firstSelectedIndex);
+    }
+
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
       this.evaluateSelections();
       this.turnBackBlocks();
     }
-
   }
 
   evaluateSelections() {
@@ -78,8 +83,6 @@ export class MemoryBlocksComponent implements OnInit {
         this.displayStatus.next(false);
       }, 1000);
     }
-
-    //return true;
   }
 
   constructor() { }
