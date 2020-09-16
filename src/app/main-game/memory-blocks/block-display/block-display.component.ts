@@ -10,12 +10,14 @@ export class BlockDisplayComponent implements OnInit, OnDestroy {
   
   @Input() selWord: string = "";  
   @Input() indexNum: number;
-  @Output() selectedIndex: EventEmitter<number> = new EventEmitter<number>();
+  //@Output() selectedIndex: EventEmitter<number> = new EventEmitter<number>();
   @Input() setDisplayStatus: Observable<boolean>;
   @Input() setCompletedStatus: Observable<number[]>;
+  @Input() indexMarkSetSelected: Observable<number>;
 
   displaySubscription: Subscription;
   completeSubscription: Subscription;
+  selectionSubscription: Subscription;
   displayWord: boolean = false;
   completed: boolean = false;
 
@@ -35,15 +37,16 @@ export class BlockDisplayComponent implements OnInit, OnDestroy {
         }
       }
     )
+    this.selectionSubscription = this.indexMarkSetSelected.subscribe(
+      (index: number) => {
+        if (index === this.indexNum) {
+          this.displayWord = true;
+        }
+      }
+    )
   }
 
   ngOnDestroy(): void {
     this.displaySubscription.unsubscribe();
   }
-
-  select(): void {
-    this.displayWord = true;
-    this.selectedIndex.emit(this.indexNum);    
-  }
-
 }
