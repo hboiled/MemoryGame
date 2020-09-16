@@ -1,6 +1,12 @@
 <div class="game-display">
     <!-- <div class="memoryBlock" *ngFor="let t of [].constructor(test)"> -->
+        <h3>Score: {{ playerScore }}</h3>
+        <br>
     <div class="memoryBlock" *ngFor="let w of words; let i = index">
-        <app-block-display [selWord]="words[i]"></app-block-display>
+        <app-block-display [setDisplayStatus]="displayStatus.asObservable()"
+        [setCompletedStatus]="markCompleted.asObservable()"
+        [selWord]="words[i]" [indexNum]="i"
+        (selectedIndex)="setSelectedIndex($event)"
+        ></app-block-display>
     </div>
 </div>
