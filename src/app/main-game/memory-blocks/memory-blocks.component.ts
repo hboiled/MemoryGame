@@ -26,15 +26,13 @@ export class MemoryBlocksComponent implements OnInit {
   markCompleted: Subject<number[]> = new Subject<number[]>();
 
   setSelectedIndex(num: number) {
-    //console.log("emitted num: " + num);
 
-    if (this.firstSelectedIndex >= 0) {
+    // validation of input - first already selected cannot select first again
+    if (this.firstSelectedIndex >= 0 && num !== this.firstSelectedIndex) {
       this.secondSelectedIndex = num;
     } else {
       this.firstSelectedIndex = num;
     }
-    //console.log("first:" + this.firstSelectedIndex);
-    //console.log("sec:" + this.secondSelectedIndex);
 
     // evaluate both selected indexes
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {

@@ -1,4 +1,6 @@
 .displayBlock {
+    text-align: center;
+    color: #161925;
     background-color: #CBF7ED;
     min-width: 200px;
     min-height: 200px;
