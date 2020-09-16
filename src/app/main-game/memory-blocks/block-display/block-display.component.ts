@@ -48,5 +48,7 @@ export class BlockDisplayComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.displaySubscription.unsubscribe();
+    this.completeSubscription.unsubscribe();
+    this.selectionSubscription.unsubscribe();
   }
 }
