@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
+import { Difficulty } from "../../shared/difficult-enum";
+import { MemoryGameService } from "../../services/memory-game/memory-game-service";
 
 @Component({
   selector: 'app-memory-blocks',
@@ -9,14 +11,13 @@ import { Subject } from 'rxjs';
 export class MemoryBlocksComponent implements OnInit {
 
   // game difficulty enum selection
+  // extract to parent
+  difficulty: Difficulty;
+  wordLimit: number;
+  blocksStay: boolean;
+  actionLimit: number;
 
-  words: string[] = [
-    "hello",
-    "internet",
-    "laptop",
-    "friend",
-    "computer"
-  ];
+  words: string[];
   playerScore: number = 0;
 
   firstSelectedIndex: number = -1;
@@ -26,9 +27,48 @@ export class MemoryBlocksComponent implements OnInit {
   markCompleted: Subject<number[]> = new Subject<number[]>();
   indexSelection: Subject<number> = new Subject<number>();
 
+  constructor(private gameService: MemoryGameService) { }
+
+  ngOnInit(): void {
+    //this.difficulty = Difficulty.Hard;
+    //this.setDifficulty();
+    this.gameService.init();
+    this.words = this.gameService.wordPool;
+
+    console.log(this.words);
+  }
+
+  setDifficulty(): void {
+    switch (this.difficulty) {
+      case Difficulty.Normal:
+        this.wordLimit = 5;
+        this.actionLimit = -1;
+        this.blocksStay = true;
+        break;
+      case Difficulty.Hard:
+        this.wordLimit = 10;
+        this.actionLimit = -1;
+        this.blocksStay = false;
+        break;
+      case Difficulty.Challenge:
+        this.wordLimit = 15;
+        this.actionLimit = 20; // placeholder, change to be beatable
+        this.blocksStay = false;
+        break;
+    }
+  }
+
+  checkCompletedStatus(status: boolean): boolean {
+    return status;
+  }
+
   selectBlock(index: number): void {
+    const bothIndexesSelected = (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0);
+    // disable on blocks which have been matched
+    // method to check if the block is completed
+
     // validation of selection
-    if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
+    if (bothIndexesSelected) {
       return;
     }
 
@@ -48,11 +88,13 @@ export class MemoryBlocksComponent implements OnInit {
   }
 
   evaluateSelections() {
-    console.log(this.words[this.firstSelectedIndex] + " " + this.words[this.secondSelectedIndex])
+    //console.log(this.words[this.firstSelectedIndex] + " " + this.words[this.secondSelectedIndex])
     if (this.words[this.firstSelectedIndex] == this.words[this.secondSelectedIndex]) {
       console.log("match!");
       setTimeout(() => {
-        this.markCompleted.next([this.firstSelectedIndex, this.secondSelectedIndex]);
+        if (!this.blocksStay) {
+          this.markCompleted.next([this.firstSelectedIndex, this.secondSelectedIndex]);
+        }        
         this.playerScore += 2;
       }, 1000);
 
@@ -68,44 +110,17 @@ export class MemoryBlocksComponent implements OnInit {
   }
 
   turnBackBlocks(): void {
-    /*
-    Logic:
-    default state: all indexes are returned false
-    click event should set block display to true
-    when fsi and ssi are set, set all to false
-    set timeout for 2secs
-    */
-
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
 
       setTimeout(() => {
         this.resetSelections();
-        this.displayStatus.next(false);
+        // find cleaner way of doing this
+        this.displayStatus.next(false);     
       }, 1000);
     }
   }
 
-  constructor() { }
-
-  ngOnInit(): void {
-    this.populateWords();
-    this.shuffleArray(this.words)
-
-    console.log(this.words);
-  }
-
-  populateWords(): void {
-    const cloneArr = this.words.slice(0);
-
-    for (let i = 0; i < cloneArr.length; i++) {
-      this.words.push(cloneArr[i]);
-    }
-  }
-
-  shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
+  reset(): void {
+    window.location.reload();
   }
 }

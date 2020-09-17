@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { DisplayBlock } from "./display-block-model";
 
 @Component({
   selector: 'app-block-display',
@@ -8,12 +9,15 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class BlockDisplayComponent implements OnInit, OnDestroy {
   
+  @Input() displayBlock: DisplayBlock;
+
   @Input() selWord: string = "";  
-  @Input() indexNum: number;
-  //@Output() selectedIndex: EventEmitter<number> = new EventEmitter<number>();
+  @Input() indexNum: number;  
   @Input() setDisplayStatus: Observable<boolean>;
   @Input() setCompletedStatus: Observable<number[]>;
   @Input() indexMarkSetSelected: Observable<number>;
+
+  @Output() completedStatus: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   displaySubscription: Subscription;
   completeSubscription: Subscription;
@@ -22,6 +26,10 @@ export class BlockDisplayComponent implements OnInit, OnDestroy {
   completed: boolean = false;
 
   constructor() { }  
+
+  getCompletedStatus(): void {
+    this.completedStatus.emit(this.completed);
+  }
 
   ngOnInit(): void {
     console.log(this.selWord);
@@ -34,6 +42,7 @@ export class BlockDisplayComponent implements OnInit, OnDestroy {
         // extract indexes to vars
         if (this.indexNum === indexes[0] || this.indexNum === indexes[1]) {
           this.completed = true;
+          this.completedStatus.next(true);
         }
       }
     )
