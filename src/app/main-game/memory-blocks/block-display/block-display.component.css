@@ -11,3 +11,7 @@
 .hidden {
     visibility: hidden;
 }
+
+.normalMode {
+    opacity: 30%;    
+}

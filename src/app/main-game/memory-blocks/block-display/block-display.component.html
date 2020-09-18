@@ -1,6 +1,6 @@
-<span [ngClass]="{'hidden': completed}" (click)="getCompletedStatus()"
+<span [ngClass]="{'hidden': displayBlock.completedStatus}"
 style="cursor: pointer" class="list-group-item clearfix displayBlock" id="displaySel">            
-    <div class="pull-up">
-        <p>{{ displayWord === true ? selWord : "" }}</p>
+    <div class="pull-up">        
+        <p>{{ displayBlock.revealed === true ? selWord : "" }}</p>
     </div>    
 </span>

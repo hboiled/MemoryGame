@@ -4,8 +4,9 @@
     margin-bottom: 10px;
 }
 
-.remain {
-    
+.gameHeader {
+    float: left;
+    margin-right: 10px;
 }
 
 .hidden {

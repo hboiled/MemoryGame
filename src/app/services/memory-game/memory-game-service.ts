@@ -11,11 +11,15 @@ export class MemoryGameService {
     displayStatus: Subject<boolean> = new Subject<boolean>();
     markCompleted: Subject<number[]> = new Subject<number[]>();
     indexSelection: Subject<number> = new Subject<number>();
+    revealStatus: Subject<boolean> = new Subject<boolean>();
+
+    scoreCountdown: number;
 
     constructor(private wordListService: WordListService) { }
 
     init(): void {
         this.mapToBlockModel();
+        this.scoreCountdown = this.displayBlocks.length / 2;
     }
 
     mapToBlockModel(): void {
@@ -24,6 +28,7 @@ export class MemoryGameService {
         words.forEach(
             (element: string) => {
                 this.displayBlocks.push(
+                    // see if index is really needed
                     new DisplayBlock(element, false, false)
                 )
             });

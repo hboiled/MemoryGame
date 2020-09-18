@@ -14,7 +14,7 @@ export class WordListService {
         //placeholder number
         this.shuffleArray(this.words);
         this.wordLimit = 5;
-        const cloneArr = this.words.slice(0, 5);
+        const cloneArr = this.words.slice(0, this.wordLimit);
 
         for (let i = 0; i < cloneArr.length; i++) {
             this.wordPool.push(cloneArr[i]);

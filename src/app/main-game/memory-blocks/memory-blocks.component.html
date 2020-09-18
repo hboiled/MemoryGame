@@ -1,15 +1,14 @@
+<button class="gameHeader" (click)="reset()" type="button">New Game</button>
+<button class="gameHeader" [disabled]="gameCompleted" (click)="revealAll()" type="button">Reveal All</button>
+<h4 class="gameHeader" *ngIf="gameCompleted"> You Win! </h4>
+<h4 class="gameHeader">Score: {{ playerScore }}</h4>
+<br>
 <div class="game-display">
-    <!-- <div class="memoryBlock" *ngFor="let t of [].constructor(test)"> -->
-        <h3>Score: {{ playerScore }}</h3>
-        <button (click)="reset()" type="button">New Game</button>
-        <br>        
-    <div class="memoryBlock" *ngFor="let w of words; let i = index" [ngClass]="{'hidden': false}"   >   
-        <app-block-display 
-            [selWord]="words[i].assignedWord" [indexNum]="i"     
-            [displayBlock]="words[i]"
-            (click)="selectBlock(i)"    
-            (completedStatus)="checkCompletedStatus($event)"            
-            ></app-block-display>                               
-            <!-- (selectedIndex)="setSelectedIndex($event)" -->
+    <!-- <div class="memoryBlock" *ngFor="let t of [].constructor(test)"> -->    
+    <br>
+    <div class="memoryBlock" *ngFor="let w of words; let i = index" [ngClass]="{'hidden': false}">
+        <app-block-display [selWord]="words[i].assignedWord" [indexNum]="i" [displayBlock]="words[i]"
+            (click)="selectBlock(i)" (completedStatus)="checkCompletedStatus($event)"></app-block-display>
+        <!-- (selectedIndex)="setSelectedIndex($event)" -->
     </div>
 </div>

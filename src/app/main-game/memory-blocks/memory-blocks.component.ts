@@ -20,6 +20,7 @@ export class MemoryBlocksComponent implements OnInit {
 
   words: DisplayBlock[];
   playerScore: number = 0;
+  gameCompleted: boolean = false;
 
   firstSelectedIndex: number = -1;
   secondSelectedIndex: number = -1;
@@ -56,50 +57,74 @@ export class MemoryBlocksComponent implements OnInit {
     }
   }
 
-  checkCompletedStatus(status: boolean): boolean {
-    return status;
-  }
-
   selectBlock(index: number): void {
     const bothIndexesSelected = (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0);
+    const selectedBlockAlreadyMatched = this.words[index].completedStatus === true;
     // disable on blocks which have been matched
     // method to check if the block is completed
 
     // validation of selection
-    if (bothIndexesSelected) {
+    if (bothIndexesSelected || selectedBlockAlreadyMatched || this.gameCompleted) {
+      // console.log(bothIndexesSelected);
+      // console.log(selectedBlockAlreadyMatched);
+      // console.log(this.firstSelectedIndex);
+      // console.log("index sel");
+      // this.resetSelections();
       return;
     }
 
     // validation of input - first already selected cannot select first again
     if (this.firstSelectedIndex >= 0 && index !== this.firstSelectedIndex) {
       this.secondSelectedIndex = index;
-      this.gameService.indexSelection.next(this.secondSelectedIndex);
+      this.words[this.secondSelectedIndex].revealed = true;
     } else {
       this.firstSelectedIndex = index;
-      this.gameService.indexSelection.next(this.firstSelectedIndex);      
+      this.words[this.firstSelectedIndex].revealed = true;
     }
-
+    
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
       this.evaluateSelections();
-      this.turnBackBlocks();
+      console.log(this.gameService.scoreCountdown);
+      if (this.gameService.scoreCountdown > 0) {
+        this.turnBackBlocks(
+          this.firstSelectedIndex,
+          this.secondSelectedIndex);
+      } else {
+        // method should only trigger on hard mode      
+        console.log(this.gameService.scoreCountdown)
+       
+      }
     }
   }
 
   evaluateSelections() {
-    //console.log(this.words[this.firstSelectedIndex] + " " + this.words[this.secondSelectedIndex])
-    if (this.words[this.firstSelectedIndex] == this.words[this.secondSelectedIndex]) {
-      console.log("match!");
+    console.log(this.words[this.firstSelectedIndex] + " " + this.words[this.secondSelectedIndex])
+    if (this.words[this.firstSelectedIndex].assignedWord ===
+      this.words[this.secondSelectedIndex].assignedWord) {
+      this.gameService.scoreCountdown--;
+      console.log("match! " + this.gameService.scoreCountdown);
       setTimeout(() => {
-        if (!this.blocksStay) {
-          this.gameService.markCompleted.next([this.firstSelectedIndex, this.secondSelectedIndex]);
-        }        
+        this.gameService.markCompleted.next([this.firstSelectedIndex, this.secondSelectedIndex]);
         this.playerScore += 2;
+        if (this.gameService.scoreCountdown === 0) {
+          console.log('game finished ' + this.gameService.scoreCountdown)
+          this.gameCompleted = true;
+          // remove hidden class from all blocks
+          this.revealAll();
+        }
       }, 1000);
-
     } else {
       console.log("no match");
       this.playerScore--;
     }
+  }
+
+  revealAll() {
+    this.words.forEach(element => {
+      element.completedStatus = false;
+      element.revealed = true;
+    });
+    console.log(this.words)
   }
 
   resetSelections(): void {
@@ -107,13 +132,14 @@ export class MemoryBlocksComponent implements OnInit {
     this.secondSelectedIndex = -1;
   }
 
-  turnBackBlocks(): void {
+  turnBackBlocks(indexFirst: number, indexSecond: number): void {
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
-
+      console.log("turning back blocks")
       setTimeout(() => {
         this.resetSelections();
         // find cleaner way of doing this        
-        this.gameService.displayStatus.next(false);    
+        this.words[indexFirst].revealed = false;
+        this.words[indexSecond].revealed = false;
       }, 1000);
     }
   }
