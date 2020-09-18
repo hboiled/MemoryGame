@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { MemoryGameService } from 'src/app/services/memory-game/memory-game-service';
 import { DisplayBlock } from "./display-block-model";
 
 @Component({
@@ -12,10 +13,7 @@ export class BlockDisplayComponent implements OnInit, OnDestroy {
   @Input() displayBlock: DisplayBlock;
 
   @Input() selWord: string = "";  
-  @Input() indexNum: number;  
-  @Input() setDisplayStatus: Observable<boolean>;
-  @Input() setCompletedStatus: Observable<number[]>;
-  @Input() indexMarkSetSelected: Observable<number>;
+  @Input() indexNum: number;    
 
   @Output() completedStatus: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -25,19 +23,20 @@ export class BlockDisplayComponent implements OnInit, OnDestroy {
   displayWord: boolean = false;
   completed: boolean = false;
 
-  constructor() { }  
+  constructor(private gameService: MemoryGameService) { }  
 
   getCompletedStatus(): void {
     this.completedStatus.emit(this.completed);
   }
 
-  ngOnInit(): void {
-    console.log(this.selWord);
-    this.displaySubscription = this.setDisplayStatus.subscribe(
+  ngOnInit(): void {  
+    this.selWord = this.displayBlock.assignedWord;  
+    
+    this.displaySubscription = this.gameService.displayStatus.subscribe(
       (status: boolean) => {
         this.displayWord = status;
     });
-    this.completeSubscription = this.setCompletedStatus.subscribe(
+    this.completeSubscription = this.gameService.markCompleted.subscribe(
       (indexes: number[]) => {
         // extract indexes to vars
         if (this.indexNum === indexes[0] || this.indexNum === indexes[1]) {
@@ -46,7 +45,7 @@ export class BlockDisplayComponent implements OnInit, OnDestroy {
         }
       }
     )
-    this.selectionSubscription = this.indexMarkSetSelected.subscribe(
+    this.selectionSubscription = this.gameService.indexSelection.subscribe(
       (index: number) => {
         if (index === this.indexNum) {
           this.displayWord = true;

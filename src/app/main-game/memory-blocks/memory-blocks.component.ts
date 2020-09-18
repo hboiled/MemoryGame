@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Difficulty } from "../../shared/difficult-enum";
 import { MemoryGameService } from "../../services/memory-game/memory-game-service";
+import { DisplayBlock } from './block-display/display-block-model';
 
 @Component({
   selector: 'app-memory-blocks',
@@ -17,15 +18,12 @@ export class MemoryBlocksComponent implements OnInit {
   blocksStay: boolean;
   actionLimit: number;
 
-  words: string[];
+  words: DisplayBlock[];
   playerScore: number = 0;
 
   firstSelectedIndex: number = -1;
   secondSelectedIndex: number = -1;
 
-  displayStatus: Subject<boolean> = new Subject<boolean>();
-  markCompleted: Subject<number[]> = new Subject<number[]>();
-  indexSelection: Subject<number> = new Subject<number>();
 
   constructor(private gameService: MemoryGameService) { }
 
@@ -33,7 +31,7 @@ export class MemoryBlocksComponent implements OnInit {
     //this.difficulty = Difficulty.Hard;
     //this.setDifficulty();
     this.gameService.init();
-    this.words = this.gameService.wordPool;
+    this.words = this.gameService.displayBlocks;
 
     console.log(this.words);
   }
@@ -75,10 +73,10 @@ export class MemoryBlocksComponent implements OnInit {
     // validation of input - first already selected cannot select first again
     if (this.firstSelectedIndex >= 0 && index !== this.firstSelectedIndex) {
       this.secondSelectedIndex = index;
-      this.indexSelection.next(this.secondSelectedIndex);
+      this.gameService.indexSelection.next(this.secondSelectedIndex);
     } else {
       this.firstSelectedIndex = index;
-      this.indexSelection.next(this.firstSelectedIndex);
+      this.gameService.indexSelection.next(this.firstSelectedIndex);      
     }
 
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
@@ -93,7 +91,7 @@ export class MemoryBlocksComponent implements OnInit {
       console.log("match!");
       setTimeout(() => {
         if (!this.blocksStay) {
-          this.markCompleted.next([this.firstSelectedIndex, this.secondSelectedIndex]);
+          this.gameService.markCompleted.next([this.firstSelectedIndex, this.secondSelectedIndex]);
         }        
         this.playerScore += 2;
       }, 1000);
@@ -114,8 +112,8 @@ export class MemoryBlocksComponent implements OnInit {
 
       setTimeout(() => {
         this.resetSelections();
-        // find cleaner way of doing this
-        this.displayStatus.next(false);     
+        // find cleaner way of doing this        
+        this.gameService.displayStatus.next(false);    
       }, 1000);
     }
   }

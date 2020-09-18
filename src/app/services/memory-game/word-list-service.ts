@@ -34,4 +34,5 @@ export class WordListService {
         this.shuffleArray(this.wordPool);
         return this.wordPool.slice(0);
     }
+
 }

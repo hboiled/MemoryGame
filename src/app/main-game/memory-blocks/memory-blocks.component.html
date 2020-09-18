@@ -4,10 +4,9 @@
         <button (click)="reset()" type="button">New Game</button>
         <br>        
     <div class="memoryBlock" *ngFor="let w of words; let i = index" [ngClass]="{'hidden': false}"   >   
-        <app-block-display [setDisplayStatus]="displayStatus.asObservable()"
-            [setCompletedStatus]="markCompleted.asObservable()"
-            [indexMarkSetSelected]="indexSelection.asObservable()"
-            [selWord]="words[i]" [indexNum]="i"     
+        <app-block-display 
+            [selWord]="words[i].assignedWord" [indexNum]="i"     
+            [displayBlock]="words[i]"
             (click)="selectBlock(i)"    
             (completedStatus)="checkCompletedStatus($event)"            
             ></app-block-display>                               

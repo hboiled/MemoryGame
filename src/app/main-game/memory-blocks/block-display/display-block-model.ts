@@ -6,6 +6,6 @@ export class DisplayBlock {
         public assignedWord: string,
         public completedStatus: boolean,
         public revealed: boolean,
-        public indexNum: number
+        public indexNum?: number // temp nullable, may remove in future
     ) {}
 }
