@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Difficulty } from "../../shared/difficult-enum";
 import { MemoryGameService } from "../../services/memory-game/memory-game-service";
@@ -12,15 +12,14 @@ import { DisplayBlock } from './block-display/display-block-model';
 export class MemoryBlocksComponent implements OnInit {
 
   // game difficulty enum selection
-  // extract to parent
-  difficulty: Difficulty;
-  wordLimit: number;
-  blocksStay: boolean;
-  actionLimit: number;
+  // extract to parent  
+  @Input() difficulty: Difficulty;
 
   words: DisplayBlock[];
   playerScore: number = 0;
   gameCompleted: boolean = false;
+  attemptsRemaining: number;
+  endOfGameMsg: string;
 
   firstSelectedIndex: number = -1;
   secondSelectedIndex: number = -1;
@@ -29,33 +28,11 @@ export class MemoryBlocksComponent implements OnInit {
   constructor(private gameService: MemoryGameService) { }
 
   ngOnInit(): void {
-    //this.difficulty = Difficulty.Hard;
-    //this.setDifficulty();
-    this.gameService.init();
+    this.gameService.init(this.difficulty["difficulty"]);
     this.words = this.gameService.displayBlocks;
-
-    console.log(this.words);
+    this.attemptsRemaining = this.gameService.difficultySettings.actionLimit;
   }
 
-  setDifficulty(): void {
-    switch (this.difficulty) {
-      case Difficulty.Normal:
-        this.wordLimit = 5;
-        this.actionLimit = -1;
-        this.blocksStay = true;
-        break;
-      case Difficulty.Hard:
-        this.wordLimit = 10;
-        this.actionLimit = -1;
-        this.blocksStay = false;
-        break;
-      case Difficulty.Challenge:
-        this.wordLimit = 15;
-        this.actionLimit = 20; // placeholder, change to be beatable
-        this.blocksStay = false;
-        break;
-    }
-  }
 
   selectBlock(index: number): void {
     const bothIndexesSelected = (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0);
@@ -65,11 +42,6 @@ export class MemoryBlocksComponent implements OnInit {
 
     // validation of selection
     if (bothIndexesSelected || selectedBlockAlreadyMatched || this.gameCompleted) {
-      // console.log(bothIndexesSelected);
-      // console.log(selectedBlockAlreadyMatched);
-      // console.log(this.firstSelectedIndex);
-      // console.log("index sel");
-      // this.resetSelections();
       return;
     }
 
@@ -81,33 +53,53 @@ export class MemoryBlocksComponent implements OnInit {
       this.firstSelectedIndex = index;
       this.words[this.firstSelectedIndex].revealed = true;
     }
-    
+
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
       this.evaluateSelections();
-      console.log(this.gameService.scoreCountdown);
-      if (this.gameService.scoreCountdown > 0) {
-        this.turnBackBlocks(
-          this.firstSelectedIndex,
-          this.secondSelectedIndex);
-      } else {
-        // method should only trigger on hard mode      
-        console.log(this.gameService.scoreCountdown)
-       
+      
+      if (this.gameService.difficultySettings.setting === Difficulty.Challenge) {
+        if (this.evaluateRemainingAttempts()) {
+          return;
+        }        
       }
+
+      if (this.gameService.scoreCountdown > 0) {
+        setTimeout(() => {
+          this.turnBackBlocks(
+            this.firstSelectedIndex,
+            this.secondSelectedIndex);
+        }, 1000);
+      } 
     }
+  }
+
+  evaluateRemainingAttempts(): boolean {
+    this.attemptsRemaining--;
+
+    if (this.attemptsRemaining === 0) {
+      this.endOfGameMsg = "You Lose."
+      console.log("lose")
+      this.gameCompleted = true;
+      this.revealAll();
+      return true;
+    }
+
+    return false;
   }
 
   evaluateSelections() {
     console.log(this.words[this.firstSelectedIndex] + " " + this.words[this.secondSelectedIndex])
     if (this.words[this.firstSelectedIndex].assignedWord ===
       this.words[this.secondSelectedIndex].assignedWord) {
+
       this.gameService.scoreCountdown--;
-      console.log("match! " + this.gameService.scoreCountdown);
+
       setTimeout(() => {
         this.gameService.markCompleted.next([this.firstSelectedIndex, this.secondSelectedIndex]);
         this.playerScore += 2;
         if (this.gameService.scoreCountdown === 0) {
           console.log('game finished ' + this.gameService.scoreCountdown)
+          this.endOfGameMsg = "You Win!";
           this.gameCompleted = true;
           // remove hidden class from all blocks
           this.revealAll();
@@ -124,7 +116,6 @@ export class MemoryBlocksComponent implements OnInit {
       element.completedStatus = false;
       element.revealed = true;
     });
-    console.log(this.words)
   }
 
   resetSelections(): void {
@@ -135,12 +126,10 @@ export class MemoryBlocksComponent implements OnInit {
   turnBackBlocks(indexFirst: number, indexSecond: number): void {
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
       console.log("turning back blocks")
-      setTimeout(() => {
-        this.resetSelections();
-        // find cleaner way of doing this        
-        this.words[indexFirst].revealed = false;
-        this.words[indexSecond].revealed = false;
-      }, 1000);
+      this.resetSelections();
+      // find cleaner way of doing this        
+      this.words[indexFirst].revealed = false;
+      this.words[indexSecond].revealed = false;
     }
   }
 

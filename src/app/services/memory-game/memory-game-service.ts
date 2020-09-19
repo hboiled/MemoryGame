@@ -1,29 +1,47 @@
-import { Injectable } from "@angular/core";
+import { Injectable, ɵConsole } from "@angular/core";
 import { Subject } from 'rxjs';
 import { DisplayBlock } from 'src/app/main-game/memory-blocks/block-display/display-block-model';
+import { Difficulty } from 'src/app/shared/difficult-enum';
+import { DifficultyModel } from 'src/app/shared/difficulty-model';
 import { WordListService } from "./word-list-service";
 
 @Injectable({ providedIn: 'root' })
 export class MemoryGameService {
 
     displayBlocks: DisplayBlock[] = [];
+    difficultySettings: DifficultyModel;
 
-    displayStatus: Subject<boolean> = new Subject<boolean>();
     markCompleted: Subject<number[]> = new Subject<number[]>();
-    indexSelection: Subject<number> = new Subject<number>();
-    revealStatus: Subject<boolean> = new Subject<boolean>();
 
-    scoreCountdown: number;
+    scoreCountdown: number;    
 
     constructor(private wordListService: WordListService) { }
 
-    init(): void {
-        this.mapToBlockModel();
+    init(difficulty: Difficulty): void {
+
+        this.setDifficulty(difficulty.toUpperCase());
+        console.log(this.difficultySettings)
+        this.mapToBlockModel(this.difficultySettings.wordLimit);
         this.scoreCountdown = this.displayBlocks.length / 2;
     }
 
-    mapToBlockModel(): void {
-        const words: string[] = this.wordListService.getWordList();
+    setDifficulty(difficulty): void {
+        
+        switch (difficulty) {
+            case "NORMAL":
+                this.difficultySettings = new DifficultyModel(5, false, -1, Difficulty.Normal);
+                break;
+            case "HARD":
+                this.difficultySettings = new DifficultyModel(10, true, -1, Difficulty.Hard);
+                break;
+            case Difficulty.Challenge:
+                this.difficultySettings = new DifficultyModel(10, true, 2, Difficulty.Challenge);
+                break;
+        }
+    }
+
+    mapToBlockModel(wordLimit: number): void {
+        const words: string[] = this.wordListService.getWordList(wordLimit);
 
         words.forEach(
             (element: string) => {
@@ -32,7 +50,6 @@ export class MemoryGameService {
                     new DisplayBlock(element, false, false)
                 )
             });
-
         console.log(this.displayBlocks);
     }
 }

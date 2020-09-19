@@ -1,8 +1,11 @@
 <button class="gameHeader" (click)="reset()" type="button">New Game</button>
 <button class="gameHeader" [disabled]="gameCompleted" (click)="revealAll()" type="button">Reveal All</button>
-<h4 class="gameHeader" *ngIf="gameCompleted"> You Win! </h4>
+
+<h4 *ngIf="attemptsRemaining > 0" class="gameHeader">Attempts Remaining: {{ attemptsRemaining }} |</h4>
 <h4 class="gameHeader">Score: {{ playerScore }}</h4>
+<h4 class="gameHeader" *ngIf="gameCompleted">| {{ endOfGameMsg }} </h4>
 <br>
+
 <div class="game-display">
     <!-- <div class="memoryBlock" *ngFor="let t of [].constructor(test)"> -->    
     <br>

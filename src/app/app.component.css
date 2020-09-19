@@ -2,4 +2,5 @@
     min-height: 90vh;
     color: aliceblue;
     background-color: #406E8E;
+    overflow: hidden;
 }

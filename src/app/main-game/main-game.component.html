@@ -1,5 +1,20 @@
 <div class="container">
-    <p>The Game</p>
+    <div class="row">
+        <h2>The Game</h2>
 
-    <app-memory-blocks></app-memory-blocks>
+        <form *ngIf="!difficultySet" id="diff" [formGroup]="difficultySelection" (ngSubmit)="selectDifficulty()">
+            <select formControlName="difficulty">
+                <option [ngValue]="null" [disabled]="true">Select Difficulty</option>
+                <option *ngFor="let d of difficulties()" 
+                [ngValue]="d">{{ d }}</option>                
+            </select>
+
+            <button type="submit">Submit</button>
+        </form>
+
+    </div>
+
+
+    <app-memory-blocks *ngIf="difficultySet" [difficulty]="selectDifficulty()"
+    ></app-memory-blocks>
 </div>

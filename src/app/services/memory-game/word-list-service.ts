@@ -10,11 +10,10 @@ export class WordListService {
 
     constructor() { }
 
-    populateWords(): void {
+    populateWords(wordLimit: number): void {
         //placeholder number
         this.shuffleArray(this.words);
-        this.wordLimit = 5;
-        const cloneArr = this.words.slice(0, this.wordLimit);
+        const cloneArr = this.words.slice(0, wordLimit);
 
         for (let i = 0; i < cloneArr.length; i++) {
             this.wordPool.push(cloneArr[i]);
@@ -29,8 +28,8 @@ export class WordListService {
         }
     }
 
-    getWordList(): string[] {
-        this.populateWords();
+    getWordList(wordLimit: number): string[] {
+        this.populateWords(wordLimit);
         this.shuffleArray(this.wordPool);
         return this.wordPool.slice(0);
     }

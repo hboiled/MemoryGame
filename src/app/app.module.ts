@@ -8,6 +8,7 @@ import { FooterComponent } from './footer/footer.component';
 import { MainGameComponent } from './main-game/main-game.component';
 import { MemoryBlocksComponent } from './main-game/memory-blocks/memory-blocks.component';
 import { BlockDisplayComponent } from './main-game/memory-blocks/block-display/block-display.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { BlockDisplayComponent } from './main-game/memory-blocks/block-display/b
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
