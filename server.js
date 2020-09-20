@@ -2,9 +2,9 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-app.use(express.static(__dirname + '/dist/memory-game'));
+app.use(express.static(__dirname + '/dist/MemoryGame'));
 app.get('/*', function(req, res) {
-  res.sendFile(path.join(__dirname + '/dist/memory-game/index.html'));
+  res.sendFile(path.join(__dirname + '/dist/MemoryGame/index.html'));
 });
 
 app.listen(process.env.PORT || 8080);
