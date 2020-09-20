@@ -56,11 +56,11 @@ export class MemoryBlocksComponent implements OnInit {
 
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
       this.evaluateSelections();
-      
+
       if (this.gameService.difficultySettings.setting === Difficulty.Challenge) {
         if (this.evaluateRemainingAttempts()) {
           return;
-        }        
+        }
       }
 
       if (this.gameService.scoreCountdown > 0) {
@@ -69,7 +69,7 @@ export class MemoryBlocksComponent implements OnInit {
             this.firstSelectedIndex,
             this.secondSelectedIndex);
         }, 1000);
-      } 
+      }
     }
   }
 
@@ -78,7 +78,7 @@ export class MemoryBlocksComponent implements OnInit {
 
     if (this.attemptsRemaining === 0) {
       this.endOfGameMsg = "You Lose."
-      console.log("lose")
+      //      console.log("lose")
       this.gameCompleted = true;
       this.revealAll();
       return true;
@@ -88,7 +88,7 @@ export class MemoryBlocksComponent implements OnInit {
   }
 
   evaluateSelections() {
-    console.log(this.words[this.firstSelectedIndex] + " " + this.words[this.secondSelectedIndex])
+    //    console.log(this.words[this.firstSelectedIndex] + " " + this.words[this.secondSelectedIndex])
     if (this.words[this.firstSelectedIndex].assignedWord ===
       this.words[this.secondSelectedIndex].assignedWord) {
 
@@ -97,8 +97,14 @@ export class MemoryBlocksComponent implements OnInit {
       setTimeout(() => {
         this.gameService.markCompleted.next([this.firstSelectedIndex, this.secondSelectedIndex]);
         this.playerScore += 2;
+
+        // if (this.gameService.difficultySettings.setting === Difficulty.Normal) {
+        //   this.words[this.firstSelectedIndex].revealed = true;
+        //   this.words[this.secondSelectedIndex].revealed = true;
+        // }
+
         if (this.gameService.scoreCountdown === 0) {
-          console.log('game finished ' + this.gameService.scoreCountdown)
+          //          console.log('game finished ' + this.gameService.scoreCountdown)
           this.endOfGameMsg = "You Win!";
           this.gameCompleted = true;
           // remove hidden class from all blocks
@@ -106,7 +112,7 @@ export class MemoryBlocksComponent implements OnInit {
         }
       }, 1000);
     } else {
-      console.log("no match");
+      //      console.log("no match");
       this.playerScore--;
     }
   }
@@ -125,8 +131,18 @@ export class MemoryBlocksComponent implements OnInit {
 
   turnBackBlocks(indexFirst: number, indexSecond: number): void {
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
-      console.log("turning back blocks")
       this.resetSelections();
+      if (this.gameService.difficultySettings.setting === Difficulty.Normal) {        
+        let matchCompletion: boolean = 
+          this.words[indexFirst].completedStatus &&
+          this.words[indexSecond].completedStatus;
+//        console.log(matchCompletion);
+        if (matchCompletion) {
+          return;
+        }
+      }
+
+//      console.log("turning back blocks")      
       // find cleaner way of doing this        
       this.words[indexFirst].revealed = false;
       this.words[indexSecond].revealed = false;

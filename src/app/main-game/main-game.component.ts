@@ -22,7 +22,7 @@ export class MainGameComponent implements OnInit {
     this.difficultySelection = new FormGroup({
       difficulty: new FormControl(null, Validators.required)
     });
-    console.log(this.difficulty)
+    //console.log(this.difficulty)
   }
 
   selectDifficulty(): Difficulty {

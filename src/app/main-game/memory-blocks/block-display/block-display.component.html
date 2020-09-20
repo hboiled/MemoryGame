@@ -1,4 +1,5 @@
-<span [ngClass]="{'hidden': displayBlock.completedStatus}"
+<span [ngClass]="{'hidden': displayBlock.completedStatus && !isNormalMode, 
+'normalMode': isNormalMode && displayBlock.completedStatus}"
 style="cursor: pointer" class="list-group-item clearfix displayBlock" id="displaySel">            
     <div class="pull-up">        
         <p>{{ displayBlock.revealed === true ? selWord : "" }}</p>

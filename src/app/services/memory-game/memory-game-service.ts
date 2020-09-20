@@ -20,7 +20,7 @@ export class MemoryGameService {
     init(difficulty: Difficulty): void {
 
         this.setDifficulty(difficulty.toUpperCase());
-        console.log(this.difficultySettings)
+//        console.log(this.difficultySettings)
         this.mapToBlockModel(this.difficultySettings.wordLimit);
         this.scoreCountdown = this.displayBlocks.length / 2;
     }
@@ -28,14 +28,14 @@ export class MemoryGameService {
     setDifficulty(difficulty): void {
         
         switch (difficulty) {
-            case "NORMAL":
+            case Difficulty.Normal:
                 this.difficultySettings = new DifficultyModel(5, false, -1, Difficulty.Normal);
                 break;
-            case "HARD":
+            case Difficulty.Hard:
                 this.difficultySettings = new DifficultyModel(10, true, -1, Difficulty.Hard);
                 break;
             case Difficulty.Challenge:
-                this.difficultySettings = new DifficultyModel(10, true, 2, Difficulty.Challenge);
+                this.difficultySettings = new DifficultyModel(10, true, 20, Difficulty.Challenge);
                 break;
         }
     }
@@ -50,6 +50,6 @@ export class MemoryGameService {
                     new DisplayBlock(element, false, false)
                 )
             });
-        console.log(this.displayBlocks);
+//        console.log(this.displayBlocks);
     }
 }
