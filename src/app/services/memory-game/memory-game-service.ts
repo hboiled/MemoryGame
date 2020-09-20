@@ -12,6 +12,8 @@ export class MemoryGameService {
     difficultySettings: DifficultyModel;
 
     markCompleted: Subject<number[]> = new Subject<number[]>();
+    blockFlip: Subject<{n: number, b: boolean}> = 
+        new Subject<{n: number, b: boolean}>();
 
     scoreCountdown: number;    
 

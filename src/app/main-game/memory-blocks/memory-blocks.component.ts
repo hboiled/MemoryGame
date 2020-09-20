@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
 import { Difficulty } from "../../shared/difficult-enum";
 import { MemoryGameService } from "../../services/memory-game/memory-game-service";
 import { DisplayBlock } from './block-display/display-block-model';
@@ -24,7 +23,6 @@ export class MemoryBlocksComponent implements OnInit {
   firstSelectedIndex: number = -1;
   secondSelectedIndex: number = -1;
 
-
   constructor(private gameService: MemoryGameService) { }
 
   ngOnInit(): void {
@@ -48,10 +46,12 @@ export class MemoryBlocksComponent implements OnInit {
     // validation of input - first already selected cannot select first again
     if (this.firstSelectedIndex >= 0 && index !== this.firstSelectedIndex) {
       this.secondSelectedIndex = index;
-      this.words[this.secondSelectedIndex].revealed = true;
+      //this.words[this.secondSelectedIndex].revealed = true;
+      this.gameService.blockFlip.next({n: this.secondSelectedIndex, b:true});
     } else {
       this.firstSelectedIndex = index;
-      this.words[this.firstSelectedIndex].revealed = true;
+      //this.words[this.firstSelectedIndex].revealed = true;
+      this.gameService.blockFlip.next({n: this.firstSelectedIndex, b:true});
     }
 
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
@@ -71,6 +71,7 @@ export class MemoryBlocksComponent implements OnInit {
         }, 1000);
       }
     }
+    console.log(this.words)
   }
 
   evaluateRemainingAttempts(): boolean {
@@ -118,10 +119,12 @@ export class MemoryBlocksComponent implements OnInit {
   }
 
   revealAll() {
-    this.words.forEach(element => {
+    this.gameCompleted = true;
+    for (let i = 0; i < this.words.length; i++) {
+      const element = this.words[i];
       element.completedStatus = false;
-      element.revealed = true;
-    });
+      this.gameService.blockFlip.next({n:i, b:true});
+    }
   }
 
   resetSelections(): void {
@@ -132,20 +135,19 @@ export class MemoryBlocksComponent implements OnInit {
   turnBackBlocks(indexFirst: number, indexSecond: number): void {
     if (this.firstSelectedIndex >= 0 && this.secondSelectedIndex >= 0) {
       this.resetSelections();
-      if (this.gameService.difficultySettings.setting === Difficulty.Normal) {        
-        let matchCompletion: boolean = 
+      if (this.gameService.difficultySettings.setting === Difficulty.Normal) {
+        let matchCompletion: boolean =
           this.words[indexFirst].completedStatus &&
           this.words[indexSecond].completedStatus;
-//        console.log(matchCompletion);
+        //        console.log(matchCompletion);
         if (matchCompletion) {
           return;
         }
       }
-
-//      console.log("turning back blocks")      
+      //      console.log("turning back blocks")      
       // find cleaner way of doing this        
-      this.words[indexFirst].revealed = false;
-      this.words[indexSecond].revealed = false;
+      this.gameService.blockFlip.next({n: indexFirst, b:false});
+      this.gameService.blockFlip.next({n: indexSecond, b:false});      
     }
   }
 

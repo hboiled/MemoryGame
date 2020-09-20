@@ -10,7 +10,7 @@
     <!-- <div class="memoryBlock" *ngFor="let t of [].constructor(test)"> -->    
     <br>
     <div class="memoryBlock" *ngFor="let w of words; let i = index" [ngClass]="{'hidden': false}">
-        <app-block-display [selWord]="words[i].assignedWord" [indexNum]="i" [displayBlock]="words[i]"
+        <app-block-display [selWord]="words[i].assignedWord" [indexNum]="i" [displayBlock]="words[i]"            
             (click)="selectBlock(i)" (completedStatus)="checkCompletedStatus($event)"></app-block-display>
         <!-- (selectedIndex)="setSelectedIndex($event)" -->
     </div>
