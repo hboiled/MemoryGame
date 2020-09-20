@@ -13,5 +13,6 @@
 }
 
 .normalMode {
-    opacity: 30%;    
+    opacity: 50%;
+    text-decoration: none;    
 }
