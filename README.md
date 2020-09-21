@@ -1,6 +1,23 @@
-# MemoryGame
+# Memory Game
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.1.
+
+## Heroku Deployment
+https://hardboiled-memory-games.herokuapp.com/
+
+## Screenshots
+
+Index:
+![alt text](https://github.com/hboiled/MemoryGame/blob/master/screenshots/main.png?raw=true)
+
+Normal mode + flip animation:
+![alt text](https://github.com/hboiled/MemoryGame/blob/master/screenshots/normal-flip.png?raw=true)
+
+Normal mode + win:
+![alt text](https://github.com/hboiled/MemoryGame/blob/master/screenshots/normal-win.png?raw=true)
+
+Challenge mode:
+![alt text](https://github.com/hboiled/MemoryGame/blob/master/screenshots/challenge.png?raw=true)
 
 ## Development server
 
