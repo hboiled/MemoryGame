@@ -2,7 +2,8 @@
 'normalMode': isNormalMode && displayBlock.completedStatus}"
 [@flipBlock]="currentState"
 style="cursor: pointer" class="list-group-item clearfix displayBlock" id="displaySel">            
-    <div class="pull-up">        
-        <p>{{ displayBlock.revealed === true ? selWord : "" }}</p>
+    <div>        
+        <p class="textContent"
+        >{{ displayBlock.revealed === true ? selWord : "" }}</p>
     </div>    
 </span>

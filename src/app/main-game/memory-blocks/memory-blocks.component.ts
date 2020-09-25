@@ -118,6 +118,11 @@ export class MemoryBlocksComponent implements OnInit {
     }
   }
 
+  revealBtn(): void {
+    this.endOfGameMsg = "Revealed";
+    this.revealAll();
+  }
+
   revealAll() {
     this.gameCompleted = true;
     for (let i = 0; i < this.words.length; i++) {
