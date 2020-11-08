@@ -2,6 +2,9 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.1.
 
+## Azure build
+https://dev.azure.com/sfleeRMS/hardboiledGames/_apis/build/status/hardboiledGame-Angular-CI?branchName=master
+
 ## Heroku Deployment
 https://hardboiled-memory-games.herokuapp.com/
 
